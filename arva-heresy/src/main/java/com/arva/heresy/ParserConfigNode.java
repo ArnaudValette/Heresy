@@ -51,7 +51,6 @@ class Node implements ParserConfigNode {
 
     public void describe() {
         Set<Entry<String,ParserConfigNode>> entries = entrySet();
-        System.out.print(entries);
         for(Entry<String, ParserConfigNode> entry:entries){
             System.out.println(entry.getKey());
             ParserConfigNode val =  entry.getValue();

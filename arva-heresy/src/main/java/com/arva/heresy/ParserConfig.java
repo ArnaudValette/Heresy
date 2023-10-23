@@ -1,42 +1,39 @@
 package com.arva.heresy;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class ParserConfig implements ParserConfigNode {
     private Node root = new Node();
 
     public ParserConfig() {
-        super();
-        String[] cookiePercent = { "digit", "%" };
-        String[] cookieRatio = { "digit", "/", "digit" };
-        String[] date = { "digit", "-", "digit", "-", "digit", " ", "Capital", "low" , "low"};
-        String[] checkBoxEmpty = { " " };
-        String[] checkBoxActive = { "X" };
-        String[] image = { "[", "any", "]" };
-        String[] link = { "[", "any", "]", "[", "ANY", "]" };
-        String[] footnote = { "f", "n", ":", "any" };
-
-        subWrapper(cookiePercent, "cookiePercent");
-        subWrapper(cookieRatio, "cookieRatio");
-        subWrapper(date, "date");
-        subWrapper(checkBoxEmpty, "checkBoxEmpty");
-        subWrapper(checkBoxActive, "checkBoxActive");
-        subWrapper(image, "image");
-        subWrapper(link, "link");
-        subWrapper(footnote, "footnote");
+        String[][] config = {
+            {"digit,%", "cookiePercent"},
+            {"digit,/,digit","cookieRatio"},
+            {"digit,-,digit,-,digit, ,Capital,low,low","date"},
+            {" ","checkBoxEmpty"},
+            {"X","checkBoxActive"},
+            {"[,any,]","image"},
+            {"[,any,],[,ANY,]","link"},
+            {"f,n,:,any","footnote"},
+        };
+        for(String[] elemt : config){
+            subWrapper(elemt);
+        }
     }
 
     public void describe() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(root);
-        System.out.println(json);
-        //root.describe();
+        //Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //String json = gson.toJson(root);
+        //System.out.println(json);
+        root.describe();
     }
 
 
-    public void subWrapper(String[] s, String name) {
-        subscribe(s, t(name));
+    public void subWrapper(String[] s) {
+        subscribe(arr(s[0]), t(s[1]));
+    }
+
+    public String[] arr(String s) {
+        return s.split(",");
     }
 
     public void subscribe(String[] s, Tail t) {
