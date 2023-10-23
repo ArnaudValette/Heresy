@@ -11,6 +11,16 @@ interface StringFunction {
 
 public class FileProcessor{
 
+    public static void simpleCall(String pathName, StringFunction f) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(pathName))) {
+                f.apply(reader.readLine());
+        }
+        catch (FileNotFoundException e) {
+            System.err.println("NOENT");
+        } catch (IOException e) {
+        }
+
+    }
     public static void iterativeCall(String pathName, StringFunction f){
         try (BufferedReader reader = new BufferedReader(new FileReader(pathName))) {
             String line;

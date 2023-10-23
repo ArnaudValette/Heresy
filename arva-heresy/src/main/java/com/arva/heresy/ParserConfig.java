@@ -27,6 +27,14 @@ public class ParserConfig implements ParserConfigNode {
         root.describe();
     }
 
+    public ParserConfigNode get(String key){
+        return (ParserConfigNode) root.get(key);
+    }
+
+    public boolean has(String key){
+        return root.has(key);
+    }
+
 
     public void subWrapper(String[] s) {
         subscribe(arr(s[0]), t(s[1]));
