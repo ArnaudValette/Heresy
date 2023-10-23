@@ -1,8 +1,9 @@
 package com.arva.heresy;
 
+import java.util.HashMap;
 
-public class ParserConfig implements ParserConfigNode {
-    private Node root = new Node();
+public class ParserConfig extends Node{
+    //private Node root = new Node();
 
     public ParserConfig() {
         String[][] config = {
@@ -24,17 +25,8 @@ public class ParserConfig implements ParserConfigNode {
         //Gson gson = new GsonBuilder().setPrettyPrinting().create();
         //String json = gson.toJson(root);
         //System.out.println(json);
-        root.describe();
+        //children.describe();
     }
-
-    public ParserConfigNode get(String key){
-        return (ParserConfigNode) root.get(key);
-    }
-
-    public boolean has(String key){
-        return root.has(key);
-    }
-
 
     public void subWrapper(String[] s) {
         subscribe(arr(s[0]), t(s[1]));
@@ -45,7 +37,7 @@ public class ParserConfig implements ParserConfigNode {
     }
 
     public void subscribe(String[] s, Tail t) {
-        Node curr = root;
+        Node curr = children;
         for (int i = 0, j = s.length; i < j; i = i + 1) {
             String c = s[i];
             if (!curr.has(c)) {

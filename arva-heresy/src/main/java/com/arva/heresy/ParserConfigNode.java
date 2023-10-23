@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 interface ParserConfigNode {
     void describe();
 }
+
 class Tail implements ParserConfigNode {
     boolean done;
     String type;
@@ -17,7 +18,7 @@ class Tail implements ParserConfigNode {
         done = true;
     }
 
-    public boolean isDone(){
+    public boolean isDone() {
         return done;
     }
 
@@ -25,14 +26,24 @@ class Tail implements ParserConfigNode {
         return type;
     }
 
-    public void describe(){
+    public void describe() {
         System.out.println(getType());
+    }
+
+}
+
+class NodeChildren extends HashMap<String, ParserConfigNode> {
+    public boolean has(String key) {
+        return this.containsKey(key);
     }
 }
 
 class Node implements ParserConfigNode {
-    final private Map<String, ParserConfigNode> children= new HashMap<>();
+    final Map<String, ParserConfigNode> children= new HashMap<>();
 
+    public Set<String> keySet(){
+        return children.keySet();
+    }
     public Set<Entry<String,ParserConfigNode>> entrySet(){
         return children.entrySet();
     }
@@ -41,7 +52,7 @@ class Node implements ParserConfigNode {
         children.put(key, child);
     }
 
-    public Object get(String key) {
+    public ParserConfigNode get(String key) {
         return children.get(key);
     }
 
