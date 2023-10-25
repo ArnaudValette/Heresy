@@ -1,18 +1,21 @@
 package com.arva.heresy;
 
-public class ParserConfig extends Node {
-    private Node children = new Node();
+import java.util.Map.Entry;
+import java.util.Set;
+
+public class ParserConfig implements ParserConfigNode {
+    final ParserConfigNode children = new Node();
 
     public ParserConfig() {
         String[][] config = {
-            {"digit,%", "cookiePercent"},
-            {"digit,/,digit","cookieRatio"},
-            {"digit,-,digit,-,digit, ,Capital,low,low","date"},
-            {" ","checkBoxEmpty"},
-            {"X","checkBoxActive"},
-            {"[,any,]","image"},
-            {"[,any,],[,ANY,]","link"},
-            {"f,n,:,any","footnote"},
+            {"[,digit,%", "cookiePercent"},
+            {"[,digit,/,digit","cookieRatio"},
+            {"[,digit,-,digit,-,digit, ,Capital,low,low","date"},
+            {"[, ","checkBoxEmpty"},
+            {"[,X","checkBoxActive"},
+            {"[,[,any,]","image"},
+            {"[,[,any,],[,ANY,]","link"},
+            {"[,f,n,:,any","footnote"},
         };
         for(String[] elemt : config){
             subWrapper(elemt);
@@ -35,19 +38,54 @@ public class ParserConfig extends Node {
     }
 
     public void subscribe(String[] s, Tail t) {
-        Node curr = children;
+        ParserConfigNode curr = children;
         for (int i = 0, j = s.length; i < j; i = i + 1) {
             String c = s[i];
             if (! curr.has(c)) {
                 curr.put(c, new Node());
             }
 
-            curr = (Node) curr.get(c);
+            curr = curr.get(c);
         }
         curr.put("]", t);
     }
+
     public Tail t(String name) {
         return new Tail(name);
+    }
+
+    public Node toNode(){
+        return (Node) this.children;
+    }
+
+    @Override
+    public ParserConfigNode get(String key) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    }
+
+    @Override
+    public boolean has(String key) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'has'");
+    }
+
+    @Override
+    public void put(String key, ParserConfigNode n) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'put'");
+    }
+
+    @Override
+    public Set<Entry<String, ParserConfigNode>> entrySet() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'entrySet'");
+    }
+
+    @Override
+    public Set<String> keySet() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'keySet'");
     }
 
 

@@ -70,7 +70,7 @@ class Node implements ParserConfigNode {
     // At one point Node is transitionning from Map<String, Node> to Map<String, Tail>
     // I don't know yet how to do better (typescript has this ability to Map<String , Node | Tail> 
     // which prevents us from creating this kind of artificial "implementation" to regroup things under a common type
-    final Map<String, ParserConfigNode> children= new HashMap<>();
+    Map<String, ParserConfigNode> children = new HashMap<>();
 
     public Set<String> keySet(){
         return children.keySet();

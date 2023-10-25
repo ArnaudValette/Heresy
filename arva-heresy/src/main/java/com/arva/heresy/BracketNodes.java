@@ -16,6 +16,10 @@ class BracketNode{
         type= t;
         content=s;
     }
+
+    public void describe() {
+        System.out.println(content + " " + type);
+    }
 }
 
 public class BracketNodes{
@@ -38,5 +42,11 @@ public class BracketNodes{
     }
     public void end(int end, String type, String content){
         current.complete(end, type, content);
+    }
+
+    public void describe() {
+        brackets.forEach((b) -> {
+            b.describe();
+        });
     }
 }

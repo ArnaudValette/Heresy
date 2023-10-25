@@ -1,7 +1,13 @@
 package com.arva.heresy;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 
 public class Parser {
     public Parser() {
@@ -12,14 +18,13 @@ class BracketParser extends Parser {
 
     ParserConfig config;
     CommandMap commands;
-    String prevKey;
-    Node prev;
-    Node curr;  
+    String previousCommandKey;
+    ParserConfigNode availableCommands;  
     String memory;
     BracketNodes brackets;
-    boolean isActive;
     boolean hasMatched;
     boolean isRedundant;
+    boolean isAwake;
 
     public BracketParser(ParserConfig conf) {
         config = conf;
@@ -50,81 +55,87 @@ class BracketParser extends Parser {
         noMatch();
         for (int i = 0, j = s.length(); i < j; i = i + 1) {
             char c = s.charAt(i);
-            Set<String> keys= curr.keySet();
-            Iterator<String> iterator = keys.iterator();
-
-            while(iterator.hasNext()){
-                String key = iterator.next();
-                handleMatch(key, c);
-                if(hasMatched){
-                    if(!isActive){
-                        brackets.start(i);
-                    }
-                    if(curr.get(key) instanceof Node){
-                        handleNode(curr, key, c);
-                        break;
-                    }
-                    if(curr.get(key) instanceof Tail){
-                        handleTail((Tail) curr.get(key), c, i);
-                        break;
+            handleRedundant(c,i);
+            if (!hasMatched) {
+                List<String> currentCommandKeys = getCurrentCommandKeys();
+                Iterator<String> iterator = currentCommandKeys.iterator();
+                while (iterator.hasNext()) {
+                    String key = iterator.next();
+                    if (itDoesMatch(key, c)) {
+                        handleMatch(key, c, i);
+                        if (availableCommands instanceof Tail) {
+                            Tail t = (Tail) availableCommands;
+                            handleTail(i, t);
+                            noMatch();
+                        }
                     }
                 }
             }
-
-            if(!hasMatched){
-                if(isRedundant){
-                    handleMatch(prevKey, c);
-                    if(hasMatched){
-                        handleNode(prev, prevKey, c);
-                    }
-                    else{
-                        noMatch();
-                    }
-                }
-                else{
-                    noMatch();
-                }
+            if (!hasMatched) {
+                noMatch();
             }
+        }
+        brackets.describe();
+    }
+
+    public void handleTail(int i, Tail t) {
+        brackets.end(i, t.getType(), memory);
+        brackets.commit();
+    }
+
+    public void handleAwakening(int i) {
+        if (!isAwake) {
+            isAwake = true;
+            brackets.start(i);
+        }
+    }
+    public void handleRedundant(char c,int i) {
+        if (isRedundant && previousCommandKey != null) {
+            hasMatched = commands.get(previousCommandKey).f.apply(c);
+            if (hasMatched) {
+                handleAwakening(i);
+                memoryAppend(c);
+            }
+        }
+        else {
+            hasMatched = false;
         }
     }
 
-    public void handleNode(Node newPrev, String key, char c){
-        prev = isRedundant ? newPrev : null;
-        curr= (Node) curr.get(key);
-        prevKey = isRedundant ? key : null;
-        memoryAppend(c);
-        isActive = true;
+    public void startBracket(int i) {
+        isAwake = true;
+    }
+    public boolean itDoesMatch(String key, char c) {
+        if (commands.get(key) != null) {
+            if (commands.get(key).f.apply(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<String> getCurrentCommandKeys() {
+        Set<String> set = availableCommands.keySet();
+        List<String> keys = new ArrayList<>(set);
+        return keys;
+    }
+
+    public void handleMatch(String key, char c, int i) {
+        isRedundant = commands.get(key).isRedundant;
+        previousCommandKey = isRedundant ? key : null;
         hasMatched = true;
-    }
-
-    public void handleMatch(String key, char c){
-        Command comm = commands.get(key);
-        hasMatched = comm.f.apply(c);
-        isRedundant = comm.isRedundant;
-    }
-
-    public void handlePrevMatch(String key, char c){
-        Command comm = commands.get(key);
-        hasMatched= comm.f.apply(c);
-        isRedundant= comm.isRedundant;
-        prev=isRedundant ? prev : null; 
-        prevKey = isRedundant ? key : null;
-    }
-
-    public void handleTail(Tail t, char c, int i){
         memoryAppend(c);
-        brackets.end(i, t.type, memory);
-        brackets.commit();
-        noMatch();
+        availableCommands = availableCommands.get(key);
+        handleAwakening(i);
     }
 
     public void noMatch(){
-        curr=config;
+        availableCommands = (Node) config.toNode();
         memoryInit();
-        isActive=false;
         hasMatched=false;
         isRedundant= false;
-        prev= null;
+        isAwake = false;
+        previousCommandKey= null;
     }
 }
 
