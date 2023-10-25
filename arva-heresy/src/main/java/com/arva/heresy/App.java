@@ -11,7 +11,7 @@ public class App
             //FileProcessor.iterativeCall("/home/truite/journal/journal.org", bracketParser::parse);
             // Testing on one string
 
-            FileProcessor.simpleCall("/home/truite/journal/journal.org", bracketParser::parse);
+            FileProcessor.iterativeCall("/home/truite/journal/journal.org", bracketParser::parse);
             // Gson g = new GsonBuilder().setPrettyPrinting().create();
             // String json = g.toJson(bracketParser.brackets);
             // String ok = g.toJson(bracketParser.config);

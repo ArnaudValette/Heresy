@@ -41,7 +41,7 @@ public class ParserConfig implements ParserConfigNode {
         ParserConfigNode curr = children;
         for (int i = 0, j = s.length; i < j; i = i + 1) {
             String c = s[i];
-            if (! curr.has(c)) {
+            if (!curr.has(c)) {
                 curr.put(c, new Node());
             }
 
