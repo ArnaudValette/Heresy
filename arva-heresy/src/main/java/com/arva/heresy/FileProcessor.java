@@ -32,7 +32,7 @@ public class FileProcessor {
 
     public static void iterativeCall(String pathName, StringFunction f) {
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        List<Future<Result>> futures = new ArrayList<>();
+        List<Future<BracketResult>> futures = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(pathName))) {
             String line;
             AtomicInteger lineNumber = new AtomicInteger(1);
