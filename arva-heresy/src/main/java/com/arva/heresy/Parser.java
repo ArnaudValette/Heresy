@@ -55,6 +55,9 @@ class BracketParser extends Parser {
             if (!state.hasMatched) {
                 state.reset(config);
             }
+            if (i == j - 1) {
+                brackets.finalize(j);
+            }
         }
 
         return new BracketResult(brackets, lineNumber);

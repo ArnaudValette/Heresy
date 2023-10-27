@@ -25,7 +25,7 @@ class BracketNode{
 public class BracketNodes{
     final List<BracketNode> brackets = new ArrayList<>();
     BracketNode current;
-    List<List<Integer>> toBeFormatted;
+    List<List<Integer>> toBeFormatted = new ArrayList<>();
     BracketNode prev;
 
     public void push(BracketNode b) {
@@ -33,10 +33,12 @@ public class BracketNodes{
     }
 
     public void commit(){
-        if (prev == null && current.start > 0) {
-            pushFormat(0, current.start);
-        } else {
-            pushFormat(prev.end, current.start);
+        if (current.start > 0) {
+            if (prev == null) {
+                pushFormat(0, current.start);
+            } else {
+                pushFormat(prev.end, current.start);
+            }
         }
         brackets.add(current);
         reset();
@@ -44,19 +46,24 @@ public class BracketNodes{
 
     public void reset(){
         prev= current;
-        current=null; 
+        current = null;
+    }
+
+    public void finalize(int endFormat){
+        //  A : dsfsdfsd [dfsdfs] (already handled by commit)
+        // B : sdfkjsd sdj sldfsd lkf
+        // C : fdlkdsalk fsdkf [fsdf] dfdsfa
+
+        if (prev == null) {
+            // B
+            pushFormat(0, endFormat);
+        }
+        else if(prev != null && prev.end < endFormat){
+            pushFormat(prev.end, endFormat);
+        }
     }
 
     public void start(int start){
-        /* When starting a bracketNode
-           if the bracketNode is at index > 0
-           it means that there's a string toBeFormatted
-           between the end of the previous bracketNode and
-           the start of that new one;
-        
-           If there's no previous one AND if start > 0,
-           it means the toBeFormatted string is substring(0,start);
-         */
         current = new BracketNode(start);
     }
     public void end(int end, String type, String content){
@@ -71,6 +78,7 @@ public class BracketNodes{
     }
 
     public void describe() {
+        System.out.println(toBeFormatted);
         brackets.forEach((b) -> {
             b.describe();
         });
