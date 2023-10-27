@@ -1,3 +1,5 @@
+package com.arva.heresy;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ class FormatNode {
     }
 
 }
+
 
 public class FormatNodes {
     final List<FormatNode> formats = new ArrayList<>();
