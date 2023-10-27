@@ -25,6 +25,10 @@ class BracketNode{
 public class BracketNodes{
     final List<BracketNode> brackets = new ArrayList<>();
     BracketNode current;
+    // We should be able to parse concurrently each text delimitations
+    // Which means, each thread should create threads in order to process each
+    // part of the given line that is not a bracketNode
+    List<String> toBeFormatted;
 
     public void push(BracketNode b) {
         brackets.add(b);

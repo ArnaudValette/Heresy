@@ -30,7 +30,7 @@ class BracketParser extends Parser {
         return map;
     }
 
-    public Result parse(String s, int lineNumber) {
+    public BracketResult parse(String s, int lineNumber) {
         BracketNodes brackets = new BracketNodes();
         ParserState state = new ParserState(config, brackets);
         state.reset(config);
@@ -57,7 +57,7 @@ class BracketParser extends Parser {
             }
         }
 
-        return new Result(brackets, lineNumber);
+        return new BracketResult(brackets, lineNumber);
     }
 
     public boolean itDoesMatch(String key, char c) {

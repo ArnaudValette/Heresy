@@ -15,14 +15,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @FunctionalInterface
 interface StringFunction {
-    Result apply(String s, int i);
+    BracketResult apply(String s, int i);
 }
 
-class Result {
+class BracketResult {
     BracketNodes brackets;
     int lineNumber;
 
-    public Result(BracketNodes b, int i) {
+    public BracketResult(BracketNodes b, int i) {
         this.brackets = b;
         this.lineNumber = i;
     }
@@ -47,8 +47,8 @@ public class FileProcessor {
             executor.shutdown();
         }
 
-        List<Result> results = new ArrayList<>();
-        for (Future<Result> future : futures) {
+        List<BracketResult> results = new ArrayList<>();
+        for (Future<BracketResult> future : futures) {
             try {
                 results.add(future.get());
             } catch (InterruptedException | ExecutionException e) {
