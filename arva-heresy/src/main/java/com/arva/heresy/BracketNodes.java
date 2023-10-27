@@ -50,17 +50,14 @@ public class BracketNodes{
     }
 
     public void finalize(int endFormat){
-        //  A : dsfsdfsd [dfsdfs] (already handled by commit)
-        // B : sdfkjsd sdj sldfsd lkf
-        // C : fdlkdsalk fsdkf [fsdf] dfdsfa
-
         if (prev == null) {
-            // B
             pushFormat(0, endFormat);
         }
         else if(prev != null && prev.end < endFormat){
             pushFormat(prev.end, endFormat);
         }
+        // You only have the indexes of the substrings to be formatted,
+        // this is not here that you should use a callback to parse Format nodes
     }
 
     public void start(int start){
