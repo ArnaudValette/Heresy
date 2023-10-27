@@ -14,23 +14,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @FunctionalInterface
-interface StringFunction {
+interface BracketFunction {
     BracketResult apply(String s, int i);
 }
 
-class BracketResult {
-    BracketNodes brackets;
-    int lineNumber;
-
-    public BracketResult(BracketNodes b, int i) {
-        this.brackets = b;
-        this.lineNumber = i;
-    }
+@FunctionalInterface
+interface FormatFunction {
+    FormatResult apply(String s, int i);
 }
 
 public class FileProcessor {
 
-    public static void iterativeCall(String pathName, StringFunction f) {
+    public static void iterativeCall(String pathName, BracketFunction f) {
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         List<Future<BracketResult>> futures = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(pathName))) {
