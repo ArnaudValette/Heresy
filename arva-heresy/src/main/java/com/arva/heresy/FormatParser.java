@@ -1,18 +1,22 @@
 package com.arva.heresy;
 
+import java.util.List;
+
 class FormatResult {
     FormatNodes formats;
-    int lineNumber;
+    int start;
+    int end;
 
-    public FormatResult(FormatNodes f, int i) {
+    public FormatResult(FormatNodes f, List<Integer> limits) {
         formats = f;
-        lineNumber = i;
+        start = limits.get(0);
+        end = limits.get(1);
     }
 }
 public class FormatParser {
-    public FormatResult parse(String s, int lineNumber) {
+    public FormatResult parse(String s, List<Integer> limits) {
         FormatNodes formats = new FormatNodes();
-        return new FormatResult(formats, lineNumber);
+        return new FormatResult(formats, limits);
     }
     private class ParserState {
     }

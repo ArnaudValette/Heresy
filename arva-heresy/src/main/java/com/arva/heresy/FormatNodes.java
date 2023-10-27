@@ -19,7 +19,7 @@ class FormatNode {
 public class FormatNodes {
     final List<FormatNode> formats = new ArrayList<>();
 
-    public void push(FormatNode f) {
-        formats.add(f);
+    public void push(int start, int end, int type, String content) {
+        formats.add(new FormatNode(start, end, type, content));
     }
 }
