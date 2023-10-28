@@ -62,7 +62,9 @@ public class FormatParser {
             int end = m2.start;
             String content = s.substring(start,end);
             state.commitFlag(m1.type);
-            formats.push(start + offset, end + offset, state.type, content);
+            if (content != "") {
+                formats.push(start + offset - 1, end + offset + 1, state.type, content);
+            }
         }
         if (!formats.has(0)) {
             // there are no formats nodes
@@ -72,7 +74,7 @@ public class FormatParser {
             if (formats.get(0).start > 1+offset) {
                 // some non formatted text should be pushed at the start
                 int start = 0 + offset;
-                int end = formats.get(0).start;
+                int end = formats.get(0).start - 1;
                 String content = s.substring(0, end - offset);
                 formats.push(start, end, 0b000000, content, 0);
             }
@@ -80,7 +82,7 @@ public class FormatParser {
                 // some non formatted text should be push at the end
                 int start = formats.getLast().end;
                 int end = s.length() + offset;
-                String content = s.substring(start - offset, s.length());
+                String content = s.substring(start - offset + 1, s.length());
                 formats.push(start, end, 0b000000, content);
             }
         }

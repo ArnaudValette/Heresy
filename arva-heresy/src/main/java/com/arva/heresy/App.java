@@ -17,7 +17,7 @@ public class App
             l.add(0);
             l.add(0);
             //FormatResult results = formatParser.parse("*ok /ok/* yes +/ _ ok", l);
-            FormatResult results = formatParser.parse("ok *ok/* /yes/  _ ok", l);
+            FormatResult results = formatParser.parse("*/ok/* /*y_es*/  *_ ok*", l);
             results.formats.describe();
 
     }
