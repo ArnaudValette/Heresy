@@ -50,7 +50,6 @@ public class FormatParser {
         FormatParserState state = new FormatParserState();
         generateMarkers(s, state);
         generateFormats(s, state, formats, startOffset);
-        state.markers.forEach(m->m.describe());
         return new FormatResult(formats, limits);
     }
 
@@ -59,11 +58,31 @@ public class FormatParser {
         for(int i = 0, j = state.markers.size() ; i<j-1; i=i+1){
             Marker m1 = state.markers.get(i);
             Marker m2 = state.markers.get(i + 1);
-            int start = m1.start;
+            int start = m1.start+1;
             int end = m2.start;
             String content = s.substring(start,end);
             state.commitFlag(m1.type);
             formats.push(start + offset, end + offset, state.type, content);
+        }
+        if (!formats.has(0)) {
+            // there are no formats nodes
+            formats.push(0+offset, s.length()+offset, 0b000000, s);
+        }
+        else {
+            if (formats.get(0).start > 1+offset) {
+                // some non formatted text should be pushed at the start
+                int start = 0 + offset;
+                int end = formats.get(0).start;
+                String content = s.substring(0, end - offset);
+                formats.push(start, end, 0b000000, content, 0);
+            }
+            if (formats.getLast().end < s.length()+offset) {
+                // some non formatted text should be push at the end
+                int start = formats.getLast().end;
+                int end = s.length() + offset;
+                String content = s.substring(start - offset, s.length());
+                formats.push(start, end, 0b000000, content);
+            }
         }
     }
 

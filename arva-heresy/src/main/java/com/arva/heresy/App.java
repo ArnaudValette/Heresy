@@ -16,6 +16,9 @@ public class App
             List<Integer> l = new ArrayList<>();
             l.add(0);
             l.add(0);
-            formatParser.parse("*ok /ok/* yes +/ _ ok", l);
+            //FormatResult results = formatParser.parse("*ok /ok/* yes +/ _ ok", l);
+            FormatResult results = formatParser.parse("ok *ok/* /yes/  _ ok", l);
+            results.formats.describe();
+
     }
 }

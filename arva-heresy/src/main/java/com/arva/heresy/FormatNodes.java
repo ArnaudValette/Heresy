@@ -16,6 +16,14 @@ class FormatNode {
         content = c;
     }
 
+    public void describe() {
+        System.out.println();
+        System.out.println("-----");
+        System.out.println(type);
+        System.out.println(content);
+        System.out.println("-----");
+    }
+
 }
 
 
@@ -24,5 +32,23 @@ public class FormatNodes {
 
     public void push(int start, int end, int type, String content) {
         formats.add(new FormatNode(start, end, type, content));
+    }
+
+    public void push(int start, int end, int type, String content, int loc){
+        formats.add(loc, new FormatNode(start, end, type, content));
+    }
+    public boolean has(int index) {
+        return index >= 0 && index < formats.size();
+    }
+    public FormatNode getLast(){
+        return formats.get(formats.size() - 1);
+    }
+
+    public FormatNode get(int index) {
+        return formats.get(index);
+    }
+
+    public void describe() {
+        formats.forEach(f -> f.describe());
     }
 }
