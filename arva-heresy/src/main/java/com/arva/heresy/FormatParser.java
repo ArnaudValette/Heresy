@@ -45,12 +45,26 @@ public class FormatParser {
     public FormatResult parse(String s, List<Integer> limits) {
     // we consider the string we are given is already a substring of a line
     // the limits are there for a future need ( when we want to order results e.g.)
+        int startOffset = limits.get(0);
         FormatNodes formats = new FormatNodes();
         FormatParserState state = new FormatParserState();
         generateMarkers(s, state);
-
+        generateFormats(s, state, formats, startOffset);
         state.markers.forEach(m->m.describe());
         return new FormatResult(formats, limits);
+    }
+
+    public void generateFormats(String s, FormatParserState state, FormatNodes formats, int offset){
+        state.initFlags();
+        for(int i = 0, j = state.markers.size() ; i<j-1; i=i+1){
+            Marker m1 = state.markers.get(i);
+            Marker m2 = state.markers.get(i + 1);
+            int start = m1.start;
+            int end = m2.start;
+            String content = s.substring(start,end);
+            state.commitFlag(m1.type);
+            formats.push(start + offset, end + offset, state.type, content);
+        }
     }
 
     public void generateMarkers(String s, FormatParserState state){
@@ -59,7 +73,6 @@ public class FormatParser {
             boolean isInner = i < j - 1 && i > 0;
             if(config.has(c)){
                 Byte currentFlag = config.get(c);
-
                 if(state.hasFlag(currentFlag)){
                     boolean cond = (isInner && isValidSituation(s.charAt(i + 1), s.charAt(i - 1), c));
                     if (cond || !isInner) {
@@ -109,11 +122,8 @@ public class FormatParser {
                 type = (byte) (flag ^ type);
             }
         }
-
-        public boolean paired(Byte flag){
-            Byte a = (byte) (flag ^ type);
-            Byte flagIsAbsent = (byte) (flag & a);
-            return hasFlag(flag) ? (byte) flagIsAbsent == 0 : false;
+        public void initFlags(){
+            this.type = (byte) 0b000000;
         }
 
         public void pushWorkStack(Marker m){
