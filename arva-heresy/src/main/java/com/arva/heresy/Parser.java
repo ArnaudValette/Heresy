@@ -41,7 +41,7 @@ public class Parser {
             while((line = reader.readLine()) != null){
                 final String lineToProcess = line;
                 final int currLn = ln.getAndIncrement();
-                parser.parse(lineToProcess, currLn);
+                parser.parseHorns(lineToProcess, currLn);
             }
         }
         catch(FileNotFoundException e){
@@ -53,7 +53,7 @@ public class Parser {
     }
 
     public void parse1(File file) {
-        BracketParser b = new BracketParser(new BracketParserConfig());
+        BracketParser b = new BracketParser();
         FormatParser f = new FormatParser(new FormatParserConfig());
         List<BracketResult> bRes = new ArrayList<>();
         try(BufferedReader reader = new BufferedReader(new FileReader(file))){
@@ -62,7 +62,7 @@ public class Parser {
             while((line = reader.readLine()) != null){
                 final String lineToProcess = line;
                 final int currLn = ln.getAndIncrement();
-                BracketResult bracketResult = b.parse(lineToProcess, currLn);
+                BracketResult bracketResult = b.parseBrackets(lineToProcess, currLn);
                 bRes.add(bracketResult);
                 bracketResult.brackets.describe();
                 bracketResult.toBeFormatted().forEach(lim ->{

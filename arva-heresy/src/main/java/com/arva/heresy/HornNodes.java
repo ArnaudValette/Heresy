@@ -1,7 +1,7 @@
 package com.arva.heresy;
 import java.util.List;
 
-public class HornNode {
+class HornNode extends pNode{
     int lineNumber;
     int level;
     int id;
@@ -10,7 +10,19 @@ public class HornNode {
     String type;
 
     public HornNode(int ln, String line) {
+        super(ln);
         lineNumber = ln;
 
     }
 }
+
+public class HornNodes extends pNodes<HornNode> {
+    public HornNodes() {
+        super(HornNode.class);
+    }
+
+    public void finalize() {
+    }
+
+}
+
