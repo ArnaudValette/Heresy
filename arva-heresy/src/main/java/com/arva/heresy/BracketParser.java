@@ -21,10 +21,10 @@ class BracketResult {
 }
 
 public class BracketParser extends Parser {
-    ParserConfig config;
+    BracketParserConfig config;
     CommandMap commands;
 
-    public BracketParser(ParserConfig conf) {
+    public BracketParser(BracketParserConfig conf) {
         config = conf;
         commands = generateCommands();
     }
@@ -84,21 +84,21 @@ public class BracketParser extends Parser {
 
     private static class ParserState{
         String previousCommandKey;
-        ParserConfigNode availableCommands;  
+        BracketParserConfigNode availableCommands;  
         StringBuilder memory;
         BracketNodes brackets;
         boolean hasMatched;
         boolean isRedundant;
         boolean isAwake;
 
-        public ParserState(ParserConfig config, BracketNodes b) {
+        public ParserState(BracketParserConfig config, BracketNodes b) {
             previousCommandKey = null;
             availableCommands = (Node) config.toNode();
             memory = new StringBuilder();
             brackets = b;
         }
 
-        public void reset(ParserConfig config){
+        public void reset(BracketParserConfig config){
             availableCommands = (Node) config.toNode();
             memoryInit();
             hasMatched=false;

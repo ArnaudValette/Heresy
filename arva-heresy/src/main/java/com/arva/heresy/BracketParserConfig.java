@@ -3,10 +3,10 @@ package com.arva.heresy;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class ParserConfig implements ParserConfigNode {
-    final ParserConfigNode children = new Node();
+public class BracketParserConfig implements BracketParserConfigNode {
+    final BracketParserConfigNode children = new Node();
 
-    public ParserConfig() {
+    public BracketParserConfig() {
         String[][] config = {
             {"[,digit,%", "cookiePercent"},
             {"[,digit,/,digit","cookieRatio"},
@@ -38,7 +38,7 @@ public class ParserConfig implements ParserConfigNode {
     }
 
     public void subscribe(String[] s, Tail t) {
-        ParserConfigNode curr = children;
+        BracketParserConfigNode curr = children;
         for (int i = 0, j = s.length; i < j; i = i + 1) {
             String c = s[i];
             if (!curr.has(c)) {
@@ -59,7 +59,7 @@ public class ParserConfig implements ParserConfigNode {
     }
 
     @Override
-    public ParserConfigNode get(String key) {
+    public BracketParserConfigNode get(String key) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'get'");
     }
@@ -71,13 +71,13 @@ public class ParserConfig implements ParserConfigNode {
     }
 
     @Override
-    public void put(String key, ParserConfigNode n) {
+    public void put(String key, BracketParserConfigNode n) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'put'");
     }
 
     @Override
-    public Set<Entry<String, ParserConfigNode>> entrySet() {
+    public Set<Entry<String, BracketParserConfigNode>> entrySet() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'entrySet'");
     }

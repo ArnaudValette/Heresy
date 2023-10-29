@@ -53,7 +53,7 @@ public class Parser {
     }
 
     public void parse1(File file) {
-        BracketParser b = new BracketParser(new ParserConfig());
+        BracketParser b = new BracketParser(new BracketParserConfig());
         FormatParser f = new FormatParser(new FormatParserConfig());
         List<BracketResult> bRes = new ArrayList<>();
         try(BufferedReader reader = new BufferedReader(new FileReader(file))){
