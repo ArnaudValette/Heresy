@@ -64,6 +64,7 @@ public class Parser {
                 final int currLn = ln.getAndIncrement();
                 BracketResult bracketResult = b.parse(lineToProcess, currLn);
                 bRes.add(bracketResult);
+                bracketResult.brackets.describe();
                 bracketResult.toBeFormatted().forEach(lim ->{
                         String toFormat = lineToProcess.substring(lim.get(0), lim.get(1));
                         FormatResult formatResult = f.parse(toFormat, lim);
