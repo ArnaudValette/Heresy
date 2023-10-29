@@ -1,6 +1,10 @@
 package com.arva.heresy;
 
 import java.util.Map.Entry;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.Set;
 
 public class ParserConfig implements ParserConfigNode {
@@ -13,10 +17,10 @@ public class ParserConfig implements ParserConfigNode {
     }
 
     public void describe() {
-        //Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        //String json = gson.toJson(root);
-        //System.out.println(json);
-        //children.describe();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(children);
+        System.out.println(json);
+        children.describe();
     }
 
     public void subWrapper(String[] s) {

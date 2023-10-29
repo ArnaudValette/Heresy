@@ -11,7 +11,7 @@ class HornConfig {
             { "#,+,any,:, ", "orgDirective" },
             // note: Tables are not orgNodes
             { "|,tableText,|", "table" },
-            { "|,dash,|", "tableSeparator" },
+            //{ "|,dash,|", "tableSeparator" },
             { "-,-,-,-,-", "horizontalRule" },
             { ":, ", "orgCode" },
             { "[,f,n,:,any,], ", "footNote" },
@@ -19,8 +19,8 @@ class HornConfig {
     };
 }
 public class HornParserConfig extends ParserConfig{
-
     public HornParserConfig() {
         super(HornConfig.config);
+        this.describe();
     }
 }
