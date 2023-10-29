@@ -5,5 +5,6 @@ public class HornParser {
     }
 
     public void parse(String s, int index) {
+        System.out.println(s);
     }
 }

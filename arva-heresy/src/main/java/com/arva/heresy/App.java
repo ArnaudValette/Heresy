@@ -12,7 +12,7 @@ public class App
     public static void main( String[] args )
     {
         Parser parser = new Parser();
-        parser.parse(new File("/home/truite/journal/journal.org"));
+        parser.parse(new File("/home/truite/journal/test.org"));
         //FileProcessor.iterativeCall("/home/truite/journal/journal.org", bracketParser::parse);
             
 
