@@ -34,12 +34,14 @@ public class Parser {
        }
     */
     public void parse(File file){
+        HornParser parser = new HornParser();
         try(BufferedReader reader = new BufferedReader(new FileReader(file))){
             String line;
             AtomicInteger ln = new AtomicInteger(1);
             while((line = reader.readLine()) != null){
                 final String lineToProcess = line;
                 final int currLn = ln.getAndIncrement();
+                parser.parse(lineToProcess, currLn);
             }
         }
         catch(FileNotFoundException e){
