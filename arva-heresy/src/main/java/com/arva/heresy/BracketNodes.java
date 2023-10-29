@@ -3,13 +3,13 @@ package com.arva.heresy;
 import java.util.ArrayList;
 import java.util.List;
 
-class BracketNode{
+class BracketNode extends pNode{
     int start;
     int end;
     String type;
     String content;
     public BracketNode(int st){
-        start= st;
+        super(st);
     }
     public void complete(int e, String t, String s){
         end=e;
@@ -22,12 +22,15 @@ class BracketNode{
     }
 }
 
-public class BracketNodes{
+public class BracketNodes extends pNodes<BracketNode>{
     final List<BracketNode> brackets = new ArrayList<>();
     BracketNode current;
     List<List<Integer>> toBeFormatted = new ArrayList<>();
     BracketNode prev;
 
+    public BracketNodes(){
+        super(BracketNode.class);
+    }
     public int size() {
         return brackets.size();
     }
