@@ -84,7 +84,7 @@ public class BracketParser extends Parser {
 
     private static class ParserState{
         String previousCommandKey;
-        BracketParserConfigNode availableCommands;  
+        ParserConfigNode availableCommands;  
         StringBuilder memory;
         BracketNodes brackets;
         boolean hasMatched;

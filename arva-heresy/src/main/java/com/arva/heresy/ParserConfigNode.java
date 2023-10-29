@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-interface BracketParserConfigNode {
+interface ParserConfigNode {
     void describe();
-    BracketParserConfigNode get(String key);
+    ParserConfigNode get(String key);
     boolean has(String key);
-    void put(String key, BracketParserConfigNode n);
-    Set<Entry<String, BracketParserConfigNode>> entrySet();
+    void put(String key, ParserConfigNode n);
+    Set<Entry<String, ParserConfigNode>> entrySet();
     Set<String> keySet();
 }
 
@@ -19,7 +19,7 @@ interface BracketParserConfigNode {
   NB this class should not really be a ParserConfigNode, but it it necessary for me
   to do so in order for ParserConfig to be able to deal with both Tail and Node;
 */
-class Tail implements BracketParserConfigNode {
+class Tail implements ParserConfigNode {
     boolean done;
     String type;
 
@@ -40,7 +40,7 @@ class Tail implements BracketParserConfigNode {
         System.out.println(getType());
     }
 
-    public BracketParserConfigNode get(String key) {
+    public ParserConfigNode get(String key) {
         return this;
     }
 
@@ -48,11 +48,11 @@ class Tail implements BracketParserConfigNode {
         return false;
     }
 
-    public void put(String key, BracketParserConfigNode n) {
+    public void put(String key, ParserConfigNode n) {
     }
 
-    public Set<Entry<String, BracketParserConfigNode>> entrySet() {
-        Set<Entry<String, BracketParserConfigNode>> res = new HashSet<>();
+    public Set<Entry<String, ParserConfigNode>> entrySet() {
+        Set<Entry<String, ParserConfigNode>> res = new HashSet<>();
         res.add(Map.entry("done", this));
         return res;
     }
@@ -66,24 +66,24 @@ class Tail implements BracketParserConfigNode {
 }
 
 
-class Node implements BracketParserConfigNode {
+class Node implements ParserConfigNode {
     // At one point Node is transitionning from Map<String, Node> to Map<String, Tail>
     // I don't know yet how to do better (typescript has this ability to Map<String , Node | Tail> 
     // which prevents us from creating this kind of artificial "implementation" to regroup things under a common type
-    final Map<String, BracketParserConfigNode> children = new HashMap<>();
+    final Map<String, ParserConfigNode> children = new HashMap<>();
 
     public Set<String> keySet(){
         return children.keySet();
     }
-    public Set<Entry<String,BracketParserConfigNode>> entrySet(){
+    public Set<Entry<String,ParserConfigNode>> entrySet(){
         return children.entrySet();
     }
 
-    public void put(String key, BracketParserConfigNode child) {
+    public void put(String key, ParserConfigNode child) {
         children.put(key, child);
     }
 
-    public BracketParserConfigNode get(String key) {
+    public ParserConfigNode get(String key) {
         return children.get(key);
     }
 
@@ -92,10 +92,10 @@ class Node implements BracketParserConfigNode {
     }
 
     public void describe() {
-        Set<Entry<String,BracketParserConfigNode>> entries = entrySet();
-        for(Entry<String, BracketParserConfigNode> entry:entries){
+        Set<Entry<String,ParserConfigNode>> entries = entrySet();
+        for(Entry<String, ParserConfigNode> entry:entries){
             System.out.println(entry.getKey());
-            BracketParserConfigNode val =  entry.getValue();
+            ParserConfigNode val =  entry.getValue();
             val.describe();
         }
     }
