@@ -25,18 +25,10 @@ public class BracketParser extends TreeBasedParser {
     public BracketResult parseBrackets(String s, int lineNumber) {
         pNodes<BracketNode> brackets =   new BracketNodes();
         BracketParserState state =  new BracketParserState((BracketParserConfig) this.config, brackets);
-        parse(s, lineNumber, state, brackets);
+        treeParse(s, lineNumber, state, brackets);
         return new BracketResult((BracketNodes) brackets, lineNumber);
     }
 
-    public boolean itDoesMatch(String key, char c) {
-        if (commands.get(key) != null) {
-            if (commands.get(key).f.apply(c)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     static class BracketParserState extends TreeBasedParserState {
 
