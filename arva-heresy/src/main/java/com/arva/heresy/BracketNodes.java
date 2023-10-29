@@ -28,6 +28,17 @@ public class BracketNodes{
     List<List<Integer>> toBeFormatted = new ArrayList<>();
     BracketNode prev;
 
+    public int size() {
+        return brackets.size();
+    }
+    public BracketNode get(int index) {
+        return brackets.get(index);
+    }
+
+    public boolean has(int index) {
+        return index >= 0 && index < brackets.size();
+    }
+
     public void push(BracketNode b) {
         brackets.add(b);
     }
@@ -37,7 +48,7 @@ public class BracketNodes{
             if (prev == null) {
                 pushFormat(0, current.start);
             } else {
-                pushFormat(prev.end, current.start);
+                pushFormat(prev.end + 1, current.start);
             }
         }
         brackets.add(current);
@@ -54,7 +65,7 @@ public class BracketNodes{
             pushFormat(0, endFormat);
         }
         else if(prev != null && prev.end < endFormat){
-            pushFormat(prev.end, endFormat);
+            pushFormat(prev.end + 1, endFormat);
         }
         // You only have the indexes of the substrings to be formatted,
         // this is not here that you should use a callback to parse Format nodes
@@ -80,4 +91,5 @@ public class BracketNodes{
             b.describe();
         });
     }
+
 }

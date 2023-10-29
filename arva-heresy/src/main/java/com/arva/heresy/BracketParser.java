@@ -13,6 +13,11 @@ class BracketResult {
         this.brackets = b;
         this.lineNumber = i;
     }
+
+    public List<List<Integer>> toBeFormatted() {
+        return brackets.toBeFormatted;
+    }
+
 }
 
 public class BracketParser extends Parser {

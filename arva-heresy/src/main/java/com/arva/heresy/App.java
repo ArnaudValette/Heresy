@@ -10,19 +10,25 @@ public class App
 {
     public static void main( String[] args )
     {
-            // BracketParser bracketParser = new BracketParser(new ParserConfig()) ;
             // FileProcessor.iterativeCall("/home/truite/journal/journal.org", bracketParser::parse);
+            BracketParser bracketParser = new BracketParser(new ParserConfig()) ;
             FormatParser formatParser = new FormatParser(new FormatParserConfig());
-            List<Integer> l = new ArrayList<>();
-            int offset= 5;
-            l.add(offset);
-            l.add(9);
-            //FormatResult results = formatParser.parse("*ok /ok/* yes +/ _ ok", l);
-            String teststr = "     */ok/* /*y_es*/ **_ ok*";
-            FormatResult results = formatParser.parse(teststr.substring(offset), l);
-            results.formats.describe();
-            String x = teststr.substring(results.formats.get(0).start, results.formats.get(0).end);
-            System.out.println(x);
+            String teststr = "[[x][y]]*/ok/* [[file][file]] /*y_es*/ [[img.png]] **_ ok*[[a]]";
+            /*
+              First, parse Brackets from a line
+             */
+            BracketResult resultBracket = bracketParser.parse(teststr, 1);
+            /*
+              Brackets gives us limits that are unformatted,
+              for each of these limits, our bracketParser should parse
+              a substring of our line.
+             */
+            resultBracket.toBeFormatted().forEach(lim -> {
+                     String toProcess = teststr.substring(lim.get(0), lim.get(1));
+                     FormatResult fres = formatParser.parse(toProcess, lim);
+                     fres.formats.describe();
+             });
+            
 
 
     }
