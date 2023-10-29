@@ -76,6 +76,7 @@ public class BracketParser extends Parser {
         }
         return false;
     }
+
     private static class ParserState{
         String previousCommandKey;
         ParserConfigNode availableCommands;  
@@ -128,10 +129,12 @@ public class BracketParser extends Parser {
             hasMatched = false;
         }
     }
+
         public void handleTail(int i, Tail t) {
             brackets.end(i, t.getType(), memory.toString());
             brackets.commit();
         }
+
         public void memoryInit(){
             memory = new StringBuilder();
         }
@@ -139,12 +142,14 @@ public class BracketParser extends Parser {
         public void memoryAppend(char c){
             memory.append(c);
         }
+
         public void handleAwakening(int i) {
             if (!isAwake) {
                 isAwake = true;
                 brackets.start(i);
             }
         }
+
     }
 
 }

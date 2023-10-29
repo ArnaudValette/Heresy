@@ -29,6 +29,17 @@ class FormatNode {
 
 public class FormatNodes {
     final List<FormatNode> formats = new ArrayList<>();
+    int preCount = 0;
+
+    public void pre() {
+        preCount += 1;
+    }
+
+    public int getPreCount() {
+        int value = preCount;
+        preCount = 0;
+        return value;
+    }
 
     public void push(int start, int end, int type, String content) {
         formats.add(new FormatNode(start, end, type, content));

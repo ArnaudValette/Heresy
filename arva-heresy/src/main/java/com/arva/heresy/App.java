@@ -14,11 +14,16 @@ public class App
             // FileProcessor.iterativeCall("/home/truite/journal/journal.org", bracketParser::parse);
             FormatParser formatParser = new FormatParser(new FormatParserConfig());
             List<Integer> l = new ArrayList<>();
-            l.add(0);
-            l.add(0);
+            int offset= 5;
+            l.add(offset);
+            l.add(9);
             //FormatResult results = formatParser.parse("*ok /ok/* yes +/ _ ok", l);
-            FormatResult results = formatParser.parse("*/ok/* /*y_es*/  *_ ok*", l);
+            String teststr = "     */ok/* /*y_es*/ **_ ok*";
+            FormatResult results = formatParser.parse(teststr.substring(offset), l);
             results.formats.describe();
+            String x = teststr.substring(results.formats.get(0).start, results.formats.get(0).end);
+            System.out.println(x);
+
 
     }
 }

@@ -45,6 +45,12 @@ public class FormatParser {
     public FormatResult parse(String s, List<Integer> limits) {
     // we consider the string we are given is already a substring of a line
     // the limits are there for a future need ( when we want to order results e.g.)
+    /*
+      First, we run through the string and find pairs of markers that corresponds
+      to a valid starting marker and valid ending marker
+      Second, we run through these markers (sorted by order of appearance) and
+      we compute, if necessary, composed types.
+     */
         int startOffset = limits.get(0);
         FormatNodes formats = new FormatNodes();
         FormatParserState state = new FormatParserState();
@@ -58,28 +64,44 @@ public class FormatParser {
         for(int i = 0, j = state.markers.size() ; i<j-1; i=i+1){
             Marker m1 = state.markers.get(i);
             Marker m2 = state.markers.get(i + 1);
-            int start = m1.start+1;
+            int start = m1.start;
             int end = m2.start;
-            String content = s.substring(start,end);
+            String content = s.substring(start + 1,end);
             state.commitFlag(m1.type);
+
+            /*
+              In order to merge composed markers, we have to count an offset
+              to get the proper beginning of the composed type:
+              e.g. +/strike-italic/+ does not begin or end at /, but at +
+              the strike only node that lies between + and / is not interesting to us,
+              we don't store a format for it and instead, we retain information on
+              where is this strike only starting -> the next format of composed type +/
+              needs to know this information to include the verbatim + .
+              Note that the content field of a format is the inner text between markers,
+              while the start and end is refering to the inner text PLUS the surrounding
+              markers. (You need both).
+             */
+
             if (content != "") {
-                formats.push(start + offset - 1, end + offset + 1, state.type, content);
+                int preOff = formats.getPreCount();
+                formats.push(start+offset-preOff, end + offset + 1 + preOff, state.type, content);
+            }
+            else{
+                formats.pre();
             }
         }
+
         if (!formats.has(0)) {
-            // there are no formats nodes
             formats.push(0+offset, s.length()+offset, 0b000000, s);
         }
         else {
             if (formats.get(0).start > 1+offset) {
-                // some non formatted text should be pushed at the start
                 int start = 0 + offset;
                 int end = formats.get(0).start - 1;
                 String content = s.substring(0, end - offset);
                 formats.push(start, end, 0b000000, content, 0);
             }
             if (formats.getLast().end < s.length()+offset) {
-                // some non formatted text should be push at the end
                 int start = formats.getLast().end;
                 int end = s.length() + offset;
                 String content = s.substring(start - offset + 1, s.length());
@@ -94,25 +116,54 @@ public class FormatParser {
             boolean isInner = i < j - 1 && i > 0;
             if(config.has(c)){
                 Byte currentFlag = config.get(c);
+                // state.hasFlag 
                 if(state.hasFlag(currentFlag)){
-                    boolean cond = (isInner && isValidSituation(s.charAt(i + 1), s.charAt(i - 1), c));
+                    /*
+                      A marker is valid when it is surrounded by a space and a char 
+                      that is different than a space OR the same marker
+                     */
+                    boolean cond = isValidMarker(1, isInner, s, i, c);
                     if (cond || !isInner) {
+                        /* this is an ending marker
+                           the state removes the currentFlag from its
+                           inner flag.
+                           e.g. *bold* -> we are reaching the second star,
+                           in that case, our current flag is 0b100000
+                           the state flag could be anything, but because we
+                           encountered the first star, it contains at least
+                           0b100000. state.hasFlag(currentFlag) is a condition
+                           to reach this code.
+                         */
                             state.handleMarker(currentFlag, i);
                     }
                 }
 
                 else{
-                    boolean cond = (isInner && isValidSituation(s.charAt(i - 1), s.charAt(i + 1), c));
+                    boolean cond = isValidMarker(-1, isInner, s, i, c);
                     if (cond || !isInner) {
+                        /*
+                          this is a starting marker
+                          the state will add the current flag to its inner flag,
+                          e.g. /italic words/ -> we are reaching the first /,
+                          in that case, our currentFlag is 0b010000,
+                          the state flag could be anything, but because
+                          state.hasFlag(currentFlag) is false, it means we need
+                          to add a new marker (and to update the state flag to contain
+                          the currentFlag)
+                         */
                             state.pushWorkStack(new Marker(currentFlag, i));
-                            state.commitFlag(currentFlag);
                     }
                 }
             }
         }
         if (state.markers.size() > 1) {
+            // we sort the markers by order of appearance
             state.markers.sort((a, b) -> Integer.compare(a.start, b.start));
         }
+    }
+
+    public boolean isValidMarker(int a, boolean b, String s, int i, char c){
+        return (b && isValidSituation(s.charAt(i + a), s.charAt(i - a), c));
     }
 
     public boolean isValidSituation(char a, char b, char c){
@@ -132,6 +183,7 @@ public class FormatParser {
             spliceWorkStack(flag);
             commitFlag(flag);
         }
+
         public boolean hasFlag(Byte flag){
             return (flag & type) == flag;
         }
@@ -149,6 +201,7 @@ public class FormatParser {
 
         public void pushWorkStack(Marker m){
             workStack.put(m.type, m);
+            commitFlag(m.type);
         }
 
         public Marker getFromStack(Byte t) {
