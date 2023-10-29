@@ -1,8 +1,6 @@
 package com.arva.heresy;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 //import com.google.gson.Gson;
 //import com.google.gson.GsonBuilder;
