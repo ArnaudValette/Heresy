@@ -62,7 +62,7 @@ public class TreeBasedParser {
           by the Tail object reached.
 
          */
-        state.reset(config);
+        state.init(config);
         for (int i = 0, j = s.length(); i < j; i = i + 1) {
             char c = s.charAt(i);
             state.handleRedundant(c, i, commands);
@@ -75,6 +75,7 @@ public class TreeBasedParser {
                         state.handleMatch(key, c, i, commands);
                         if (state.availableCommands instanceof Tail) {
                             Tail t = (Tail) state.availableCommands;
+                            // This is where HornNodeParser publishes an HornNode
                             state.handleTail(i, t);
                             state.reset(config);
                         }
@@ -82,6 +83,7 @@ public class TreeBasedParser {
                 }
             }
             if (!state.hasMatched) {
+                // This is where HornNodeParser publishes a paragraph
                 state.reset(config);
             }
             if (i == j - 1) {
@@ -114,6 +116,17 @@ class TreeBasedParserState{
             availableCommands = (Node) config.toNode();
             memory = new StringBuilder();
             nodes = b;
+        }
+
+    // duplication of init/reset
+    // because on some Parsers, it could be different behavior
+        public void init(ParserConfig config){
+            availableCommands = (Node) config.toNode();
+            memoryInit();
+            hasMatched=false;
+            isRedundant= false;
+            isAwake = false;
+            previousCommandKey= null;
         }
 
         public void reset(ParserConfig config){
