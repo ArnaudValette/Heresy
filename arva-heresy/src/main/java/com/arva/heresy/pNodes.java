@@ -59,7 +59,7 @@ public class pNodes<T extends pNode> {
 
     public T createT(int start) {
         try{
-            return (T) type.getDeclaredConstructor().newInstance(start);
+            return (T) type.getDeclaredConstructor(int.class).newInstance(start);
         }
         catch(InstantiationException e){
             throw new RuntimeException("Cannot create instance of " + type.getName(), e);
