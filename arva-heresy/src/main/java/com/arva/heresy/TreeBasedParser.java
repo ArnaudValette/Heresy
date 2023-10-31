@@ -1,8 +1,6 @@
 package com.arva.heresy;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 @FunctionalInterface
 interface callbackFunction {
@@ -64,6 +62,7 @@ public class TreeBasedParser {
          */
         state.init(config);
         for (int i = 0, j = s.length(); i < j; i = i + 1) {
+            boolean stop = false;
             char c = s.charAt(i);
             state.handleRedundant(c, i, commands);
             if (!state.hasMatched) {
@@ -75,14 +74,22 @@ public class TreeBasedParser {
                         state.handleMatch(key, c, i, commands);
                         if (state.availableCommands instanceof Tail) {
                             Tail t = (Tail) state.availableCommands;
-                            // This is where HornNodeParser publishes an HornNode
+                            // some subclasses may want to stop parsing the line at this point;
                                 boolean shouldStop = state.handleTail(i, t);
                                 if (shouldStop) {
+                                    stop = true;
                                     break;
                                 }
                                 state.reset(config);
                         }
+                        // no need to continue cycling through keys (we found a match);
+                        break;
                     }
+                }
+                // some subclasses may want to stop parsing the line at this point;
+                // consequence of the fact we found a tailNode in the line
+                if (stop) {
+                    break;
                 }
             }
             if (!state.hasMatched) {
@@ -124,8 +131,8 @@ class TreeBasedParserState{
             nodes = b;
         }
 
-    // duplication of init/reset
-    // because on some Parsers, it could be different behavior
+        // duplication of init/reset
+        // because on some Parsers, it could be different behavior
         public void init(ParserConfig config){
             availableCommands = (Node) config.toNode();
             memoryInit();
@@ -146,8 +153,7 @@ class TreeBasedParserState{
         }
 
         public List<String> getCurrentCommandKeys() {
-            Set<String> set = availableCommands.keySet();
-            List<String> keys = new ArrayList<>(set);
+            List<String> keys = availableCommands.keySet();
             return keys;
         }
 

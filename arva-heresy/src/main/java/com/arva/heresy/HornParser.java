@@ -29,7 +29,7 @@ public class HornParser extends TreeBasedParser {
            reused.
         */
         horns.finalize(s.length());
-        horns.describe();
+        //horns.describe();
         return new HornResult((HornNodes) horns, index);
     }
 
@@ -40,6 +40,7 @@ public class HornParser extends TreeBasedParser {
 
         @Override
         public boolean handleTail(int i, Tail t) {
+            System.out.println(t.getType());
             nodes.end(i, t.getType(), memory.toString());
             nodes.commit();
             return true;
