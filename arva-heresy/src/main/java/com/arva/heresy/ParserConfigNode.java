@@ -76,10 +76,8 @@ class Node implements ParserConfigNode {
     final Map<String, ParserConfigNode> children = new HashMap<>();
 
     public List<String> keySet(){
-        new ArrayList<>(children.keySet());
-        Set<String> keys = children.keySet();
-        List<String> sortedKeys =  new ArrayList<>(keys);
-        Collections.sort(sortedKeys, (a,b)->a=="any" ? 1 : -1);
+        List<String> sortedKeys =  new ArrayList<>(children.keySet());
+        Collections.sort(sortedKeys, (a,b)->a=="any" ? -1 : 1);
         return sortedKeys;
     }
     public Set<Entry<String,ParserConfigNode>> entrySet(){

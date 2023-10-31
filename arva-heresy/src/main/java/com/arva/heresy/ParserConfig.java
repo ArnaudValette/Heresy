@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.List;
 import java.util.Set;
 
 public class ParserConfig implements ParserConfigNode {
@@ -77,7 +78,7 @@ public class ParserConfig implements ParserConfigNode {
     }
 
     @Override
-    public Set<String> keySet() {
+    public List<String> keySet() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'keySet'");
     }
