@@ -2,26 +2,26 @@ package com.arva.heresy;
 
 class HornConfig {
     static String[][] config = {
-            { "*, ", "heading" },
-            { "TAB,-, ", "unorderedList" },
-            { "TAB,digit,., ", "unorderedList" },
-            { "TAB,letter,., ", "unorderedList" },
-            { "#,+,b,e,g,i,n,_,any, ", "startStructureTemplate" },
-            { "#,+,e,n,d,_,any, ", "endStructureTemplate" },
+            { "#,+,b,e,g,i,n,_", "startStructureTemplate" },
+            { "#,+,e,n,d,_", "endStructureTemplate" },
             { "#,+,any,:, ", "orgDirective" },
-            // note: Tables are not orgNodes
+            { "*, ", "heading" },
+            { "-, ", "unorderedList" },
+            { "digit,., ", "orderedList" },
+            { "letter,., ", "orderedList" },
+            { "TAB,-, ", "unorderedList" },
+            { "TAB,digit,., ", "orderedList" },
+            { "TAB,letter,., ", "orderedList" },
             { "|,tableText,|", "table" },
-            //{ "|,dash,|", "tableSeparator" },
             { "-,-,-,-,-", "horizontalRule" },
             { ":, ", "orgCode" },
-            { "[,f,n,:,any,], ", "footNote" },
+            { "[,f,n,:,any,]", "footNote" },
             { "C,L,O,C,K,:, ", "clock" },
     };
 }
 public class HornParserConfig extends ParserConfig{
     public HornParserConfig() {
         super(HornConfig.config);
-        this.describe();
     }
 }
 class HornParserCommands {
@@ -33,8 +33,7 @@ class HornParserCommands {
         map.put("TAB", c -> c == ' ', true);
         map.put("any", c -> c != ' ' && c != ']' && c != ':' , true);
         map.put("tableText", c -> c != '|' , true);
-
-        map.subscribeChar(" -.#+_:|CLOKfnbegid");
+        map.subscribeChars(" -.#+_:|[]CLOKefnbgid");
         return map;
     }
 }

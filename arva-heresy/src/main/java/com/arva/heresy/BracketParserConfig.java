@@ -29,7 +29,7 @@ class BracketParserCommands {
         map.put("low", c -> Character.isLowerCase(c) , false);
         map.put("any", c -> c != ' ' && c != '[' && c != ']', true);
         map.put("ANY", c -> c != '[' && c != ']', true);
-        map.subscribeChar("%/- X[]fn:");
+        map.subscribeChars("%/- X[]fn:");
         return map;
     }
 }
