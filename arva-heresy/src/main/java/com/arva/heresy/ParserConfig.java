@@ -33,7 +33,7 @@ public class ParserConfig implements ParserConfigNode {
 
     public void subscribe(String[] s, Tail t) {
         ParserConfigNode curr = children;
-        for (int i = 0, j = s.length; i < j; i = i + 1) {
+        for (int i = 0, j = s.length - 1; i < j; i = i + 1) {
             String c = s[i];
             if (!curr.has(c)) {
                 curr.put(c, new Node());
@@ -41,7 +41,7 @@ public class ParserConfig implements ParserConfigNode {
 
             curr = curr.get(c);
         }
-        curr.put("]", t);
+        curr.put(s[s.length-1], t);
     }
 
     public Tail t(String name) {

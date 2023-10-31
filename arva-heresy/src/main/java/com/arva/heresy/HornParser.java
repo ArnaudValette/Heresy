@@ -29,6 +29,7 @@ public class HornParser extends TreeBasedParser {
            reused.
         */
         horns.finalize(s.length());
+        horns.describe();
         return new HornResult((HornNodes) horns, index);
     }
 
