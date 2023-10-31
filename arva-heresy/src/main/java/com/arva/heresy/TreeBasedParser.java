@@ -76,15 +76,21 @@ public class TreeBasedParser {
                         if (state.availableCommands instanceof Tail) {
                             Tail t = (Tail) state.availableCommands;
                             // This is where HornNodeParser publishes an HornNode
-                            state.handleTail(i, t);
-                            state.reset(config);
+                                boolean shouldStop = state.handleTail(i, t);
+                                if (shouldStop) {
+                                    break;
+                                }
+                                state.reset(config);
                         }
                     }
                 }
             }
             if (!state.hasMatched) {
                 // This is where HornNodeParser publishes a paragraph
-                state.reset(config);
+                boolean shouldStop = state.reset(config);
+                if (shouldStop) {
+                    break;
+                }
             }
             if (i == j - 1) {
                 nodes.finalize(j);
@@ -129,13 +135,14 @@ class TreeBasedParserState{
             previousCommandKey= null;
         }
 
-        public void reset(ParserConfig config){
+        public boolean reset(ParserConfig config){
             availableCommands = (Node) config.toNode();
             memoryInit();
             hasMatched=false;
             isRedundant= false;
             isAwake = false;
             previousCommandKey= null;
+            return false;
         }
 
         public List<String> getCurrentCommandKeys() {
@@ -166,9 +173,10 @@ class TreeBasedParserState{
         }
     }
 
-        public void handleTail(int i, Tail t) {
+        public boolean handleTail(int i, Tail t) {
             nodes.end(i, t.getType(), memory.toString());
             nodes.commit();
+            return false;
         }
 
         public void memoryInit(){

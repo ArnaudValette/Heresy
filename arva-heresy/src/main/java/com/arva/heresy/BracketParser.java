@@ -35,9 +35,12 @@ public class BracketParser extends TreeBasedParser {
         public BracketParserState(BracketParserConfig config, pNodes<? extends pNode> b) {
             super(config, b);
         }
-        public void handleTail(int i, Tail t) {
+
+        @Override
+        public boolean handleTail(int i, Tail t) {
             nodes.end(i, t.getType(), memory.toString());
             nodes.commit();
+            return false;
         }
     }
 

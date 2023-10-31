@@ -18,6 +18,17 @@ public class HornParser extends TreeBasedParser {
         pNodes<HornNode> horns = new HornNodes();
         HornParserState state = new HornParserState((HornParserConfig) this.config, horns);
         treeParse(s, index, state, horns);
+        /* there's a semi-problem with the fact that there will always be
+           only ONE HornNode per result ( i.e. per line)
+           the design is consistent, it allows us to reuse most of the logic
+           from TreeBasedParser and TreeBasedParserState, but the behavior
+           of HornParser brings some differences and the choice of a
+           pNodes<HornNode> structure is not justified when our
+           result wil always be ONE HornNode. That creates a slight
+           unnecessary overhead, while allowing for a lot of code to be
+           reused.
+        */
+        horns.finalize(s.length());
         return new HornResult((HornNodes) horns, index);
     }
 
@@ -26,9 +37,20 @@ public class HornParser extends TreeBasedParser {
             super(config, n);
         }
 
-        public void handleTail(int i, Tail t) {
+        @Override
+        public boolean handleTail(int i, Tail t) {
             nodes.end(i, t.getType(), memory.toString());
             nodes.commit();
+            return true;
         }
+
+        @Override
+        public boolean reset(ParserConfig config) {
+            nodes.start(0);
+            nodes.end(0, "paragraph", "");
+            nodes.commit();
+            return true;
+        }
+
     }
 }
