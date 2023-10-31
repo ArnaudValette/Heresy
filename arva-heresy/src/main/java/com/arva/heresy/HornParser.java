@@ -1,11 +1,17 @@
 package com.arva.heresy;
 
+import java.util.List;
+
 class HornResult {
     HornNodes horns;
     int lineNumber;
     public HornResult(HornNodes n, int i) {
         this.horns = n;
         this.lineNumber = i;
+    }
+
+    public List<List<Integer>> toBeFormatted() {
+        return horns.toBeFormatted;
     }
 }
 public class HornParser extends TreeBasedParser {
@@ -40,7 +46,7 @@ public class HornParser extends TreeBasedParser {
 
         @Override
         public boolean handleTail(int i, Tail t) {
-            System.out.println(t.getType());
+            //System.out.println(t.getType());
             nodes.end(i, t.getType(), memory.toString());
             nodes.commit();
             return true;

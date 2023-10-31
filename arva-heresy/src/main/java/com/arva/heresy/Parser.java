@@ -35,13 +35,28 @@ public class Parser {
     */
     public void parse(File file){
         HornParser parser = new HornParser();
+        BracketParser b = new BracketParser();
+        FormatParser f = new FormatParser(new FormatParserConfig());
+        List<HornResult> hRes = new ArrayList<>();
         try(BufferedReader reader = new BufferedReader(new FileReader(file))){
             String line;
             AtomicInteger ln = new AtomicInteger(1);
             while((line = reader.readLine()) != null){
                 final String lineToProcess = line;
                 final int currLn = ln.getAndIncrement();
-                parser.parseHorns(lineToProcess, currLn);
+                HornResult hornResult = parser.parseHorns(lineToProcess, currLn);
+                hRes.add(hornResult);
+                hornResult.horns.describe();
+                hornResult.toBeFormatted().forEach(lim -> {
+                    String toBracket = lineToProcess.substring(lim.get(0), lim.get(1));
+                    BracketResult bracketResult = b.parseBrackets(toBracket, currLn);
+                    bracketResult.brackets.describe();
+                    bracketResult.toBeFormatted().forEach((li) -> {
+                        String toFormat = toBracket.substring(li.get(0), li.get(1));
+                        FormatResult formatResult = f.parse(toFormat, li);
+                        formatResult.formats.describe();
+                    });
+                });
             }
         }
         catch(FileNotFoundException e){
