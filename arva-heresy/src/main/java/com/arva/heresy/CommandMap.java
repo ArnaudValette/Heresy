@@ -35,7 +35,7 @@ public class CommandMap {
         return commands.entrySet();
     }
 
-    public void subscribeChar(String chars) {
+    public void subscribeChars(String chars) {
         for (int i = 0, j = chars.length(); i < j; i = i + 1) {
             subscribeChar(chars.charAt(i));
         }
