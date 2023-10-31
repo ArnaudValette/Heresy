@@ -1,20 +1,9 @@
 package com.arva.heresy;
 
-import java.util.List;
-
-class BracketResult {
-    BracketNodes brackets;
-    int lineNumber;
-
+class BracketResult extends TreeParserResult<BracketNode> {
     public BracketResult(BracketNodes b, int i) {
-        this.brackets = b;
-        this.lineNumber = i;
+        super(b, i);
     }
-
-    public List<List<Integer>> toBeFormatted() {
-        return brackets.toBeFormatted;
-    }
-
 }
 
 public class BracketParser extends TreeBasedParser {

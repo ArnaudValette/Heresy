@@ -1,17 +1,9 @@
 package com.arva.heresy;
 
-import java.util.List;
 
-class HornResult {
-    HornNodes horns;
-    int lineNumber;
+class HornResult extends TreeParserResult<HornNode>{
     public HornResult(HornNodes n, int i) {
-        this.horns = n;
-        this.lineNumber = i;
-    }
-
-    public List<List<Integer>> toBeFormatted() {
-        return horns.toBeFormatted;
+        super(n, i);
     }
 }
 public class HornParser extends TreeBasedParser {

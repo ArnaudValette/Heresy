@@ -46,11 +46,11 @@ public class Parser {
                 final int currLn = ln.getAndIncrement();
                 HornResult hornResult = parser.parseHorns(lineToProcess, currLn);
                 hRes.add(hornResult);
-                hornResult.horns.describe();
+                hornResult.nodes.describe();
                 hornResult.toBeFormatted().forEach(lim -> {
                     String toBracket = lineToProcess.substring(lim.get(0), lim.get(1));
                     BracketResult bracketResult = b.parseBrackets(toBracket, currLn);
-                    bracketResult.brackets.describe();
+                    bracketResult.nodes.describe();
                     bracketResult.toBeFormatted().forEach((li) -> {
                         String toFormat = toBracket.substring(li.get(0), li.get(1));
                         FormatResult formatResult = f.parse(toFormat, li);
@@ -67,6 +67,10 @@ public class Parser {
         }
     }
 
+    public void ParsingEnv(TreeBasedParser p, String l) {
+
+    }
+
     public void parse1(File file) {
         BracketParser b = new BracketParser();
         FormatParser f = new FormatParser(new FormatParserConfig());
@@ -79,7 +83,7 @@ public class Parser {
                 final int currLn = ln.getAndIncrement();
                 BracketResult bracketResult = b.parseBrackets(lineToProcess, currLn);
                 bRes.add(bracketResult);
-                bracketResult.brackets.describe();
+                bracketResult.nodes.describe();
                 bracketResult.toBeFormatted().forEach(lim ->{
                         String toFormat = lineToProcess.substring(lim.get(0), lim.get(1));
                         FormatResult formatResult = f.parse(toFormat, lim);

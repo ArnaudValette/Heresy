@@ -2,6 +2,18 @@ package com.arva.heresy;
 import java.util.Iterator;
 import java.util.List;
 
+class TreeParserResult<T extends pNode> {
+    pNodes<T> nodes;
+    int lineNumber;
+    public TreeParserResult(pNodes<T> n, int i) {
+        this.nodes = n;
+        this.lineNumber = i;
+    }
+
+    public List<List<Integer>> toBeFormatted() {
+        return nodes.toBeFormatted;
+    }
+}
 @FunctionalInterface
 interface callbackFunction {
     void apply(int i);
