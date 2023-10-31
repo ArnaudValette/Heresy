@@ -6,7 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Parser {
@@ -34,29 +39,30 @@ public class Parser {
        }
     */
     public void parse(File file){
-        HornParser parser = new HornParser();
+       List<Future<HornResult>> futures = new ArrayList<>();
+       HornParser parser = new HornParser();
         BracketParser b = new BracketParser();
         FormatParser f = new FormatParser(new FormatParserConfig());
-        List<HornResult> hRes = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         try(BufferedReader reader = new BufferedReader(new FileReader(file))){
             String line;
             AtomicInteger ln = new AtomicInteger(1);
             while((line = reader.readLine()) != null){
                 final String lineToProcess = line;
                 final int currLn = ln.getAndIncrement();
-                HornResult hornResult = parser.parseHorns(lineToProcess, currLn);
-                hRes.add(hornResult);
-                hornResult.nodes.describe();
-                hornResult.toBeFormatted().forEach(lim -> {
-                    String toBracket = lineToProcess.substring(lim.get(0), lim.get(1));
-                    BracketResult bracketResult = b.parseBrackets(toBracket, currLn);
-                    bracketResult.nodes.describe();
-                    bracketResult.toBeFormatted().forEach((li) -> {
-                        String toFormat = toBracket.substring(li.get(0), li.get(1));
-                        FormatResult formatResult = f.parse(toFormat, li);
-                        formatResult.formats.describe();
+
+                futures.add(executor.submit(() -> {
+                    HornResult hornResult = parser.parseHorns(lineToProcess, currLn);
+                    hornResult.toBeFormatted().forEach(lim -> {
+                        String toBracket = lineToProcess.substring(lim.get(0), lim.get(1));
+                        BracketResult bracketResult = b.parseBrackets(toBracket, currLn);
+                        bracketResult.toBeFormatted().forEach((li) -> {
+                            String toFormat = toBracket.substring(li.get(0), li.get(1));
+                            f.parse(toFormat, li);
+                        });
                     });
-                });
+                    return hornResult;
+                }));
             }
         }
         catch(FileNotFoundException e){
@@ -65,11 +71,21 @@ public class Parser {
         catch(IOException e){
             System.err.println(e);
         }
-    }
+        finally {
+           executor.shutdown();
+        }
+        List<HornResult> results = new ArrayList<>();
+        for (Future<HornResult> future : futures) {
+            try {
+                results.add(future.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        results.sort(Comparator.comparingInt(result -> result.lineNumber));
+        results.get(results.size() - 1).nodes.describe();
+}
 
-    public void ParsingEnv(TreeBasedParser p, String l) {
-
-    }
 
     public void parse1(File file) {
         BracketParser b = new BracketParser();

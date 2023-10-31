@@ -52,7 +52,7 @@ public class FileProcessor {
         }
         results.sort(Comparator.comparingInt(result -> result.lineNumber));
         results.forEach((res) -> {
-                res.brackets.describe();
+                res.nodes.describe();
         });
     }
 }
