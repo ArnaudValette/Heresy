@@ -1,7 +1,10 @@
 package com.arva.heresy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -12,7 +15,7 @@ interface ParserConfigNode {
     boolean has(String key);
     void put(String key, ParserConfigNode n);
     Set<Entry<String, ParserConfigNode>> entrySet();
-    Set<String> keySet();
+    List<String> keySet();
 }
 
 /*
@@ -57,8 +60,8 @@ class Tail implements ParserConfigNode {
         return res;
     }
 
-    public Set<String> keySet() {
-        Set<String> res = new HashSet<>();
+    public List<String> keySet() {
+        List<String> res = new ArrayList<>();
         res.add(type);
         return res;
     }
@@ -72,8 +75,12 @@ class Node implements ParserConfigNode {
     // which prevents us from creating this kind of artificial "implementation" to regroup things under a common type
     final Map<String, ParserConfigNode> children = new HashMap<>();
 
-    public Set<String> keySet(){
-        return children.keySet();
+    public List<String> keySet(){
+        new ArrayList<>(children.keySet());
+        Set<String> keys = children.keySet();
+        List<String> sortedKeys =  new ArrayList<>(keys);
+        Collections.sort(sortedKeys, (a,b)->a=="any" ? 1 : -1);
+        return sortedKeys;
     }
     public Set<Entry<String,ParserConfigNode>> entrySet(){
         return children.entrySet();
