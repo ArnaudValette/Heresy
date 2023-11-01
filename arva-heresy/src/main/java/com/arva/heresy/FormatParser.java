@@ -114,6 +114,7 @@ public class FormatParser {
     public void generateMarkers(String s, FormatParserState state){
         for(int i = 0, j = s.length(); i<j; i = i+1){
             char c = s.charAt(i);
+            System.out.println(c);
             boolean isInner = i < j - 1 && i > 0;
             if(config.has(c)){
                 Byte currentFlag = config.get(c);

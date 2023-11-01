@@ -2,6 +2,8 @@ package com.arva.heresy;
 import java.util.Iterator;
 import java.util.List;
 
+import com.arva.heresy.HornParser.HornParserState;
+
 class TreeParserResult<T extends pNode> {
     pNodes<T> nodes;
     int lineNumber;
@@ -108,6 +110,7 @@ public class TreeBasedParser {
                 // This is where HornNodeParser publishes a paragraph
                 boolean shouldStop = state.reset(config);
                 if (shouldStop) {
+                    ((HornParserState) state).stop(s.length());
                     break;
                 }
             }

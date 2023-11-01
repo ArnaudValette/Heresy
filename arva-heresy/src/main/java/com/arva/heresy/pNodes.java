@@ -31,6 +31,10 @@ public class pNodes<T extends pNode> {
         nodes.add(b);
     }
 
+    public void noNodes(int len) {
+        pushFormat(0, len);
+    }
+
     public void commit() {
         if (current.start > 0) {
             if (prev == null) {

@@ -87,10 +87,14 @@ public class HornParser extends TreeBasedParser {
 
         @Override
         public boolean reset(ParserConfig config) {
-            nodes.start(0);
-            nodes.end(0, "paragraph", "");
-            nodes.commit();
+            // nodes.start(0);
+            // nodes.end(0, "paragraph", "");
+            // nodes.commit();
             return true;
+        }
+
+        public void stop(int len) {
+            nodes.noNodes(len);
         }
 
     }
