@@ -3,7 +3,7 @@ package com.arva.heresy;
 import java.util.ArrayList;
 import java.util.List;
 
-class FormatNode {
+class FormatNode  extends ComparableNode{
     int start;
     int end;
     int type;
@@ -17,11 +17,7 @@ class FormatNode {
     }
 
     public void describe() {
-        System.out.println();
-        System.out.println("-----");
-        System.out.println(type);
-        System.out.println(content);
-        System.out.println("-----");
+        System.out.println(content + " " + type);
     }
 
 }

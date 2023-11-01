@@ -6,13 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -55,14 +52,15 @@ public class Parser {
 
                 CompletableFuture<HornResult> future = CompletableFuture.supplyAsync(()->{
                     HornResult hornResult = parser.parseHorns(lineToProcess, currLn);
-                    hornResult.toBeFormatted().forEach(lim -> {
-                        String toBracket = lineToProcess.substring(lim.get(0), lim.get(1));
-                        BracketResult bracketResult = b.parseBrackets(toBracket, currLn);
-                        bracketResult.toBeFormatted().forEach((li) -> {
-                            String toFormat = toBracket.substring(li.get(0), li.get(1));
-                            f.parse(toFormat, li);
-                        });
-                    });
+                    hornResult.fillBracketsAndFormats(b, f, lineToProcess, currLn);
+                    // hornResult.toBeFormatted().forEach(lim -> {
+                    //     String toBracket = lineToProcess.substring(lim.get(0), lim.get(1));
+                    //     BracketResult bracketResult = b.parseBrackets(toBracket, currLn);
+                    //     bracketResult.toBeFormatted().forEach((li) -> {
+                    //         String toFormat = toBracket.substring(li.get(0), li.get(1));
+                    //         f.parse(toFormat, li);
+                    //     });
+                    // });
                     return hornResult;
 
                     }
@@ -82,27 +80,12 @@ public class Parser {
             List<HornResult> results = futures.stream()
                                             .map(CompletableFuture::join)
                                             .collect(Collectors.toList());
-            // Now results contains all the results
-            // Process results here
-            //results.forEach(a -> a.nodes.describe());
+            results.forEach(a -> a.describe());
         }).exceptionally(e -> {
             e.printStackTrace();
             return null;
         });
-
         executor.shutdown();
-
-
-        // List<HornResult> results = new ArrayList<>();
-        // for (Future<HornResult> future : futures) {
-        //     try {
-        //         results.add(future.get());
-        //     } catch (InterruptedException | ExecutionException e) {
-        //         e.printStackTrace();
-        //     }
-        // }
-        //results.sort(Comparator.comparingInt(result -> result.lineNumber));
-        //results.get(results.size() - 1).nodes.describe();
 }
 
 

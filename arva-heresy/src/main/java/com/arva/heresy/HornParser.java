@@ -1,9 +1,48 @@
 package com.arva.heresy;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class HornResult extends TreeParserResult<HornNode>{
     public HornResult(HornNodes n, int i) {
         super(n, i);
+    }
+
+    public HornNode getNode() {
+        if (nodes.size() <= 0) {
+            return null;
+        }
+        return nodes.get(0);
+    }
+    public void fillBracketsAndFormats(BracketParser b, FormatParser f, String s, int ln){
+        // There is always only one HornNode.
+        HornNode node = getNode();
+        if (node == null) {
+            return;
+        }
+        List<List<Integer>> lims = toBeFormatted();
+        // a HornNode has always only one lim.
+        List<Integer> lim = lims.get(0);
+        String toBracket = s.substring(lim.get(0), lim.get(1));
+        BracketResult bRes = b.parseBrackets(toBracket, ln);
+        bRes.fillFormats(toBracket, f, lim.get(0));
+        List<? extends ComparableNode> x = bRes.nodes.nodes;
+        List<? extends ComparableNode> y = bRes.formats != null ? bRes.formats.formats : new ArrayList<>();
+        // bRes.formats & bRes.nodes needs to be merged and sorted.
+        List<? extends ComparableNode> mergedList = Stream.concat(x.stream(), y.stream())
+                            .sorted((n1,n2)-> Integer.compare(n1.start, n2.start))
+                            .collect(Collectors.toList());
+        node.lesserElements = mergedList;
+        // describe
+    }
+
+    public void describe() {
+        nodes.nodes.forEach((n)->{
+            n.describe();
+            n.lesserElements.forEach(l->l.describe());
+                    });
     }
 }
 public class HornParser extends TreeBasedParser {
