@@ -17,7 +17,7 @@ public class App
         Runtime runtime = Runtime.getRuntime();
         long usedMemB = runtime.totalMemory() - runtime.freeMemory();
         long startTime = System.currentTimeMillis();
-        parser.parse(new File("/home/truite/journal/test2.org"));
+        parser.parse(new File("/home/truite/journal/test.org"));
         long usedMemE = runtime.totalMemory() - runtime.freeMemory();
         long memUse = usedMemE - usedMemB;
         double memoryUsedInKB = (double) memUse / 1024;

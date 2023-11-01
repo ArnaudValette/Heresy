@@ -31,8 +31,10 @@ public class pNodes<T extends pNode> {
         nodes.add(b);
     }
 
-    public void noNodes(int len) {
+    public void paragraphNode(int len) {
         pushFormat(0, len);
+        nodes.add(current);
+        reset();
     }
 
     public void commit() {
