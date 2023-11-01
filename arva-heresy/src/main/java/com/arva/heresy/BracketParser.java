@@ -4,21 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 class BracketResult extends TreeParserResult<BracketNode> {
-    FormatNodes formats;
+    List<FormatNode> formats = new ArrayList<>();
     public BracketResult(BracketNodes b, int i) {
         super(b, i);
     }
 
-    public void fillFormats(String s, FormatParser f, int offset){
+    public void fillFormats(String s, FormatParser f,int off){
         toBeFormatted().forEach((lim)->{
             String toFormat = s.substring(lim.get(0), lim.get(1));
             List<Integer> newLims = new ArrayList<>();
-            newLims.add(lim.get(0) + offset);
-            newLims.add(lim.get(1) + offset);
-            FormatResult format = f.parse(toFormat, newLims );
-            System.out.println(toFormat + " " + offset);
-            formats = format.formats;
+            newLims.add(lim.get(0));
+            newLims.add(lim.get(1));
+            FormatResult format = f.parse(toFormat, newLims);
+            formats.addAll(format.formats.formats);
             });
+    }
+
+    public List<? extends ComparableNode> getFormats() {
+        return formats;
     }
 }
 

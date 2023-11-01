@@ -52,6 +52,7 @@ public class FormatParser {
       we compute, if necessary, composed types.
      */
         int startOffset = limits.get(0);
+        //System.out.println(limits+ " " + s);
         FormatNodes formats = new FormatNodes();
         FormatParserState state = new FormatParserState();
         generateMarkers(s, state);

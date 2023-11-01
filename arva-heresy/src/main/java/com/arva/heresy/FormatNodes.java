@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class FormatNode  extends ComparableNode{
-    int start;
-    int end;
     int type;
-    String content;
 
     public FormatNode(int s, int e, int t, String c) {
         start = s;
@@ -17,7 +14,7 @@ class FormatNode  extends ComparableNode{
     }
 
     public void describe() {
-        System.out.println(content + " " + type);
+        System.out.println(content + " " + type + " start: " + start );
     }
 
 }
@@ -40,6 +37,7 @@ public class FormatNodes {
     public void push(int start, int end, int type, String content) {
         formats.add(new FormatNode(start, end, type, content));
     }
+
 
     public void push(int start, int end, int type, String content, int loc){
         formats.add(loc, new FormatNode(start, end, type, content));

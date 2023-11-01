@@ -106,10 +106,7 @@ class ComparableNode {
 }
 
 class pNode extends ComparableNode{
-    int start;
-    int end;
     String type;
-    String content;
 
     public pNode(int st){
         start= st;
