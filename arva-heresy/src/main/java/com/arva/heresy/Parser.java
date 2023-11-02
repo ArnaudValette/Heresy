@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class Parser {
+    List<HornResult> nodes;
     /* We should operate from there to spawn Threads
        Each step should give us a new kind of data for the next one
        HornParser should give the substring that is located after e.g. ** , - , and etc
@@ -37,7 +38,7 @@ public class Parser {
             }
        }
     */
-    public void parse(File file){
+    public CompletableFuture<List<HornResult>> parse(File file){
        List<CompletableFuture<HornResult>> futures = new ArrayList<>();
        HornParser parser = new HornParser();
         BracketParser b = new BracketParser();
@@ -76,18 +77,23 @@ public class Parser {
         }
 
         CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-        allOf.thenAccept(v -> {
-            List<HornResult> results = futures.stream()
-                                            .map(CompletableFuture::join)
-                                            .collect(Collectors.toList());
-            results.forEach(a -> a.describe());
+        return allOf.thenApply(v -> {
+            return futures.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList());
         }).exceptionally(e -> {
             e.printStackTrace();
             return null;
-        });
-        executor.shutdown();
-}
+            }).whenComplete((res,ex)->executor.shutdown());
+    }
 
+    public void setReturnValue(List<HornResult> val) {
+        nodes = val;
+    }
+
+    public List<HornResult> getResults() {
+        return nodes;
+    }
 
     public void parse1(File file) {
         BracketParser b = new BracketParser();

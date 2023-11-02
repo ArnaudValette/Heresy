@@ -1,6 +1,8 @@
 package com.arva.heresy;
 
 import java.io.File;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 //import com.google.gson.Gson;
 //import com.google.gson.GsonBuilder;
@@ -17,7 +19,12 @@ public class App
         Runtime runtime = Runtime.getRuntime();
         long usedMemB = runtime.totalMemory() - runtime.freeMemory();
         long startTime = System.currentTimeMillis();
-        parser.parse(new File("/home/truite/journal/test.org"));
+        try{
+            List<HornResult> results =  parser.parse(new File("/home/truite/journal/test.org")).get();
+        }
+        catch(InterruptedException | ExecutionException e){
+            e.printStackTrace();
+        }
         long usedMemE = runtime.totalMemory() - runtime.freeMemory();
         long memUse = usedMemE - usedMemB;
         double memoryUsedInKB = (double) memUse / 1024;
@@ -28,6 +35,8 @@ public class App
         long endTime = System.currentTimeMillis();
         System.out.println("Total execution time: " + (endTime - startTime) + " ms");
         //FileProcessor.iterativeCall("/home/truite/journal/journal.org", bracketParser::parse);
+                        
+           
             
 
 
