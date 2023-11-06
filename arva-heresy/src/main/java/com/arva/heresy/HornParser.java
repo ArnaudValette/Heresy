@@ -53,7 +53,7 @@ public class HornParser extends TreeBasedParser {
     }
 
 
-    public HornResult parseHorns(String s, int index) {
+    public HornResult parseHorns(String s, int index, BracketParser b, FormatParser f) {
         pNodes<HornNode> horns = new HornNodes();
         HornParserState state = new HornParserState((HornParserConfig) this.config, horns);
         treeParse(s, index, state, horns);
@@ -69,7 +69,9 @@ public class HornParser extends TreeBasedParser {
         */
         horns.finalize(s.length());
         //horns.describe();
-        return new HornResult((HornNodes) horns, index);
+        HornResult res =  new HornResult((HornNodes) horns, index);
+        res.fillBracketsAndFormats(b, f, s, index);
+        return res;
     }
 
     static class HornParserState extends TreeBasedParserState {
