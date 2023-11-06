@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 public class Parser {
     List<HornResult> nodes;
@@ -18,17 +17,9 @@ public class Parser {
         FormatParser f = new FormatParser(new FormatParserConfig());
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         // Store futures<HornResult> in futures
-        FileProcessor.getHornResults(file, futures, executor, (s, i)->parser.parseHorns(s, i, b, f));
+        HornProcess.getHornResults(file, futures, executor, (s, i)->parser.parseHorns(s, i, b, f));
 
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-        return allOf.thenApply(v -> {
-            return futures.stream()
-                .map(CompletableFuture::join)
-                .collect(Collectors.toList());
-        }).exceptionally(e -> {
-            e.printStackTrace();
-            return null;
-            }).whenComplete((res,ex)->executor.shutdown());
+        return HornProcess.getCompletableFutures(futures, executor);
     }
 
     public void setReturnValue(List<HornResult> val) {
